@@ -1,0 +1,22 @@
+[project]
+name = "familylink-mcp"
+version = "0.1.0"
+description = "MCP server for Google Family Link: read and change screen time, bedtime, app limits and device settings of supervised children"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+dependencies = [
+    "browser-cookie3>=0.20",
+    "httpx>=0.27",
+    "mcp>=2.3",
+]
+
+[project.scripts]
+familylink-mcp = "familylink_mcp.server:main"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
