@@ -76,6 +76,18 @@ def test_device_restrictions():
     assert result == [{"device": "Phone", "setting": "Developer options", "allowed": True, "meaning": "Can turn on"}]
 
 
+def test_google_play_summary():
+    services = {
+        "playSettings": {
+            "contentFilter": [
+                {"info": {"label": "Apps", "optionsFilter": {"filterChoices": [{"level": 3, "labelSummary": "PEGI 12"}, {"labelSummary": "Allow all"}]}}, "value": {"selectedLevel": 3}},
+                {"info": {"label": "Books", "binaryFilter": {"onChoice": {"labelSummary": "Restrictions on"}, "offChoice": {"labelSummary": "Allow all"}}}, "value": {}},
+            ]
+        }
+    }
+    assert parse.google_services(services)["google_play"] == {"Apps": "PEGI 12", "Books": "Allow all"}
+
+
 def test_bonus_override():
     assert parse.is_bonus({"deviceId": "d1", "action": "unlockFor"}, "d1")
     assert not parse.is_bonus({"deviceId": "d1", "action": "lock"}, "d1")

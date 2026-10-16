@@ -77,7 +77,7 @@ class Family:
         time_limit = self.time_limit(cid)
         usage = self.apps_and_usage(cid)
         names = self.device_names(usage)
-        services = parse.without_header(self.client.get(self.people(cid, "googleServiceSettings")))
+        services = parse.google_services(self.client.get(self.people(cid, "googleServiceSettings")))
         location = self.client.get(self.people(cid, "locationsettings")).get("locationSharingSettings", {})
         return {
             "child": kid,

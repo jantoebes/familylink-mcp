@@ -176,8 +176,30 @@ def websites(restrictions: dict) -> dict:
     }
 
 
-def without_header(value: dict) -> dict:
-    return {k: v for k, v in value.items() if k != "apiHeader"}
+def play_choice(content_filter: dict) -> str:
+    info, selected = content_filter.get("info", {}), content_filter.get("value", {}).get("selectedLevel")
+    options = info.get("optionsFilter", {}).get("filterChoices")
+    binary = info.get("binaryFilter", {})
+    chosen = (
+        next((c["labelSummary"] for c in options if c.get("level") == selected), "Allow all") if options
+        else binary.get("onChoice" if selected else "offChoice", {}).get("labelSummary")
+    )
+    return chosen
+
+
+def google_services(services: dict) -> dict:
+    chrome = services.get("chromeSettings", {})
+    return {
+        "safe_search": services.get("searchSettings", {}).get("safeSearchSetting"),
+        "chrome_filter": chrome.get("filteringBehavior"),
+        "chrome_safe_sites": chrome.get("safeSitesBehavior"),
+        "chrome_permission_requests": chrome.get("permissionRequestBehavior"),
+        "chrome_extensions": chrome.get("extensionsBehavior"),
+        "photos_sharing": services.get("photosSettings", {}).get("photosEnableSharingSetting"),
+        "google_play": {
+            f.get("info", {}).get("label"): play_choice(f) for f in services.get("playSettings", {}).get("contentFilter", [])
+        },
+    }
 
 
 def restriction(item: list, names: dict) -> dict:
